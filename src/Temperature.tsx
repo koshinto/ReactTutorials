@@ -1,40 +1,26 @@
-import React from 'react'
-
 interface Props {
   scale: string
   temperature: string
   onTemperatureChange(e: string): void
 }
 
-interface State {
-  temperature: string
-  scale?: string
-}
+export default function TemperatureInput(props: Props): JSX.Element {
 
-export default class TemperatureInput extends React.Component<Props, State> {
-  constructor(props: any) {
-    super(props)
-    this.handleChange = this.handleChange.bind(this)
-    this.state = {temperature: ''}
+  const handleChange = (e: any): void => {
+    props.onTemperatureChange(e.target.value)
   }
 
-  handleChange(e: any): void {
-    this.props.onTemperatureChange(e.target.value)
+  const temperature = props.temperature
+  const scale = props.scale
+  const scaleNames: any = {
+    c: 'Celsius',
+    f: 'Fahrenheit'
   }
-
-  render() {
-    const temperature = this.props.temperature
-    const scale = this.props.scale
-    const scaleNames: any = {
-      c: 'Celsius',
-      f: 'Fahrenheit'
-    }
-    return (
-      <fieldset>
-        <legend>Enter temperature in {scaleNames[scale]}:</legend>
-        <input value={temperature} onChange={this.handleChange}/>
-      </fieldset>
-    )
-  }
+  return (
+    <fieldset>
+      <legend>Enter temperature in {scaleNames[scale]}:</legend>
+      <input value={temperature} onChange={handleChange}/>
+    </fieldset>
+  )
 }
  
