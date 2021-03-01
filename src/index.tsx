@@ -1,15 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import WelcomeDialog from './WelcomeDialog'
-import RenderSplitPane from './SplitPane'
+import Dialog from './Dialog'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
-    <WelcomeDialog />
-    <hr/>
-    <RenderSplitPane />
+    <Dialog />
   </React.StrictMode>,
   document.getElementById('root')
 )
