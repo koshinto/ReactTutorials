@@ -1,13 +1,13 @@
 import React from 'react'
 
-interface ProductRow {
-  category: string,
+interface Product {
+  name: string
   price: string,
   stocked: boolean,
-  name: string
+  category: string,
 }
 
-function ProductRow(props: ProductRow) {
+function ProductRow(props: Product) {
   const name = props.stocked ?
     props.name :
     <span style={{color: 'red'}}>{props.name}</span>
@@ -20,27 +20,60 @@ function ProductRow(props: ProductRow) {
 }
 
 interface CategoryName {
-  category: string
+  name: string
 }
 
 function ProductCatagoryRow(props: CategoryName) {
   return (
     <td colSpan={2}>
-      {props.category}
+      {props.name}
     </td>
   )
 }
 
-interface CategoryRows {
-  products: ProductRow[]
-}
-
-function ProductTable(props: CategoryRows) {
-  return 
+function ProductTable(props: any) {
+  const products = props
+  const row: JSX.Element[] = []
+  let lastCategory = ""
+  products.map((product: { category: string; name: string; price: string; stocked: boolean }) => {
+    if(product.category !== lastCategory) {
+      row.push(<ProductCatagoryRow name={product.category} />)
+      lastCategory = product.category
+    }
+    row.push(
+      <ProductRow
+        name={product.name}
+        price={product.price}
+        stocked={product.stocked}
+        category={product.category}
+      />
+    )
+  })
+  
+  return (
+    <table>
+      <thead>
+        <tr>
+          <td>Name</td>
+          <td>Price</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tbody>
+          {row}
+        </tbody>
+      </tbody>
+    </table>
+  )
 }
 
 function SearchBar() {
-  return <input></input>
+  return (
+    <form>
+      <input type="text" placeholder="Search text..."/>
+      <input type="checkbox"/>
+    </form>
+  )
 }
 
 export default function FilterableProductTable() {
@@ -53,6 +86,9 @@ export default function FilterableProductTable() {
     {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
   ]
   return (
-    <div></div>
+    <div>
+      <ProductTable products={products} />
+      <SearchBar />
+    </div>
   )
 }
