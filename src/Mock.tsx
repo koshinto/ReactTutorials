@@ -33,7 +33,12 @@ function ProductCatagoryRow(props: CategoryName) {
   )
 }
 
-function ProductTable() {
+interface Filter {
+  filterText: string
+  inStockOnly: boolean
+}
+
+function ProductTable(props: Filter) {
   const products = [
     {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
     {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
@@ -42,9 +47,13 @@ function ProductTable() {
     {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
     {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
   ]
+  const filterText = props.filterText
+  const inStockOnly = props.inStockOnly
   const rows: JSX.Element[] = []
   let lastCategory = ""
   products.forEach((product: Product) => {
+    if(product.name.indexOf(filterText) === -1) return
+    if(inStockOnly && !product.stocked) return
     if(product.category !== lastCategory) {
       rows.push(<ProductCatagoryRow name={product.category} key={product.category} />)
       lastCategory = product.category
@@ -125,7 +134,7 @@ export default function FilterableProductTable() {
         setFilterText={onFilterTextChange}
         setInStockOnly={onInstockedOnlyChange}
       />
-      <ProductTable />
+      <ProductTable filterText={filterText} inStockOnly={inStockOnly} />
     </div>
   )
 }
