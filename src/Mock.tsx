@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 interface Product {
   name: string
@@ -25,23 +25,33 @@ interface CategoryName {
 
 function ProductCatagoryRow(props: CategoryName) {
   return (
-    <td colSpan={2}>
-      {props.name}
-    </td>
+    <tr>
+      <td colSpan={2}>
+        {props.name}
+      </td>
+    </tr>
   )
 }
 
-function ProductTable(props: any) {
-  const products = props
-  const row: JSX.Element[] = []
+function ProductTable() {
+  const products = [
+    {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
+    {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
+    {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
+    {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
+    {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
+    {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
+  ]
+  const rows: JSX.Element[] = []
   let lastCategory = ""
-  products.map((product: { category: string; name: string; price: string; stocked: boolean }) => {
+  products.forEach((product: Product) => {
     if(product.category !== lastCategory) {
-      row.push(<ProductCatagoryRow name={product.category} />)
+      rows.push(<ProductCatagoryRow name={product.category} key={product.category} />)
       lastCategory = product.category
     }
-    row.push(
+    rows.push(
       <ProductRow
+        key={product.name}
         name={product.name}
         price={product.price}
         stocked={product.stocked}
@@ -54,41 +64,68 @@ function ProductTable(props: any) {
     <table>
       <thead>
         <tr>
-          <td>Name</td>
-          <td>Price</td>
+          <th>Name</th>
+          <th>Price</th>
         </tr>
       </thead>
       <tbody>
-        <tbody>
-          {row}
-        </tbody>
+        {rows}
       </tbody>
     </table>
   )
 }
 
-function SearchBar() {
+interface Search {
+  filterText: string
+  inStockOnly: boolean
+  setFilterText(text: string): void
+  setInStockOnly(bool: boolean): void
+}
+
+function SearchBar(props: Search) {
+  const handleFilterTextChange = (e: any) => {
+    props.setFilterText(e.target.value)
+  }
+
+  const handleInStockChange = (e: any) => {
+    props.setInStockOnly(e.target.checked)
+  }
+  
   return (
     <form>
-      <input type="text" placeholder="Search text..."/>
-      <input type="checkbox"/>
+      <div>
+        <input type="text" placeholder="Search text..." value={props.filterText} onChange={handleFilterTextChange} />
+      </div>
+      <div>
+        <input type="checkbox" checked={props.inStockOnly} onChange={handleInStockChange} />Only show products in stock
+      </div>
     </form>
   )
 }
 
 export default function FilterableProductTable() {
-  const products = [
-    {category: "Sporting Goods", price: "$49.99", stocked: true, name: "Football"},
-    {category: "Sporting Goods", price: "$9.99", stocked: true, name: "Baseball"},
-    {category: "Sporting Goods", price: "$29.99", stocked: false, name: "Basketball"},
-    {category: "Electronics", price: "$99.99", stocked: true, name: "iPod Touch"},
-    {category: "Electronics", price: "$399.99", stocked: false, name: "iPhone 5"},
-    {category: "Electronics", price: "$199.99", stocked: true, name: "Nexus 7"}
-  ]
+  const [ filterText, setFilterText ] = useState('')
+  const [ inStockOnly, setInStockOnly ] = useState(false)
+
+  function onFilterTextChange(text: string) {
+    setFilterText(text)
+    console.log(`change text: ${filterText}`)
+  }
+
+  function onInstockedOnlyChange(bool: boolean) {
+    setInStockOnly(bool)
+    console.log(`change inStock: ${inStockOnly}`)
+
+  }
   return (
     <div>
-      <ProductTable products={products} />
-      <SearchBar />
+      <SearchBar
+        filterText={filterText}
+        inStockOnly={inStockOnly}
+        setFilterText={onFilterTextChange}
+        setInStockOnly={onInstockedOnlyChange}
+      />
+      <ProductTable />
     </div>
   )
 }

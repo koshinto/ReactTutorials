@@ -1,12 +1,12 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import Mock from './Mock'
+import FilterableProductTable from './Mock'
 import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <React.StrictMode>
-    <Mock />
+    <FilterableProductTable />
   </React.StrictMode>,
   document.getElementById('root')
 )
